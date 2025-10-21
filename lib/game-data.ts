@@ -1,0 +1,169 @@
+export type DifficultyLevel = "soft" | "medium" | "hot"
+export type GameMode = "friends" | "couple"
+
+export interface GameData {
+  truths: Record<DifficultyLevel, string[]>
+  dares: Record<DifficultyLevel, string[]>
+}
+
+export const friendsData: GameData = {
+  truths: {
+    soft: [
+      "Quel est ton plus grand rêve ?",
+      "Quelle est ta chanson préférée en ce moment ?",
+      "Quel est ton film préféré de tous les temps ?",
+      "Quelle est ta plus grande peur ?",
+      "Quel est ton talent caché ?",
+      "Quelle est la chose la plus embarrassante qui te soit arrivée à l'école ?",
+      "Quel est ton plat préféré ?",
+      "Si tu pouvais voyager n'importe où, où irais-tu ?",
+      "Quelle est ta série préférée ?",
+      "Quel est ton meilleur souvenir d'enfance ?",
+    ],
+    medium: [
+      "As-tu déjà eu le béguin pour quelqu'un dans ce groupe ?",
+      "Quel est ton plus grand secret que personne ne connaît ?",
+      "As-tu déjà menti à ton meilleur ami ? À propos de quoi ?",
+      "Quelle est la chose la plus folle que tu aies faite ?",
+      "As-tu déjà triché à un examen ?",
+      "Qui dans ce groupe trouves-tu le plus attirant ?",
+      "As-tu déjà volé quelque chose ?",
+      "Quel est le mensonge le plus gros que tu aies dit à tes parents ?",
+      "As-tu déjà stalké quelqu'un sur les réseaux sociaux ?",
+      "Quelle est la chose la plus immature que tu fasses encore ?",
+    ],
+    hot: [
+      "Qui est ton crush secret en ce moment ? Nomme-le !",
+      "Quelle est ta plus grande fantaisie secrète ?",
+      "As-tu déjà envoyé un nude ? À qui ?",
+      "Quelle est la chose la plus hot que tu aies faite ?",
+      "Avec qui dans ce groupe voudrais-tu passer une nuit ?",
+      "As-tu déjà fait quelque chose d'intime en public ?",
+      "Quelle est ta position préférée ?",
+      "As-tu déjà trompé quelqu'un ?",
+      "Quel est ton kink secret ?",
+      "Raconte ton expérience la plus hot en détail.",
+    ],
+  },
+  dares: {
+    soft: [
+      "Fais 10 pompes maintenant !",
+      "Danse pendant 30 secondes.",
+      "Imite quelqu'un dans le groupe.",
+      "Fais un compliment sincère à chaque personne.",
+      "Raconte ta blague la plus nulle.",
+      "Chante une chanson choisie par le groupe.",
+      "Fais le tour de la pièce en marchant comme un crabe.",
+      "Fais une grimace et garde-la pendant 1 minute.",
+      "Parle avec un accent étranger pendant 2 tours.",
+      "Fais 15 jumping jacks.",
+    ],
+    medium: [
+      "Appelle un contact au hasard et dis-lui 'Je t'aime'.",
+      "Laisse quelqu'un du groupe écrire un message sur ton statut.",
+      "Laisse le groupe fouiller dans ton téléphone pendant 2 minutes.",
+      "Envoie un message à ton crush.",
+      "Mange une cuillère de quelque chose choisi par le groupe.",
+      "Poste une photo embarrassante de toi sur les réseaux sociaux.",
+      "Laisse quelqu'un te maquiller les yeux fermés.",
+      "Fais une vidéo TikTok embarrassante.",
+      "Appelle tes parents et dis-leur quelque chose de bizarre.",
+      "Reste silencieux pendant les 3 prochains tours.",
+    ],
+    hot: [
+      "Embrasse la personne à ta gauche sur la joue.",
+      "Fais un lap dance de 30 secondes à quelqu'un du groupe.",
+      "Enlève un vêtement de ton choix.",
+      "Envoie un message hot à ton crush.",
+      "Fais un massage sensuel à la personne de ton choix pendant 2 minutes.",
+      "Lèche le cou de la personne à ta droite.",
+      "Fais un strip-tease de 30 secondes.",
+      "Embrasse quelqu'un du groupe sur la bouche.",
+      "Laisse quelqu'un te donner un suçon.",
+      "Fais un body shot sur quelqu'un du groupe.",
+    ],
+  },
+}
+
+export const coupleData: GameData = {
+  truths: {
+    soft: [
+      "Quel est ton meilleur souvenir avec moi ?",
+      "Qu'est-ce qui t'a attiré chez moi au début ?",
+      "Quel est ton moment préféré de la journée avec moi ?",
+      "Quelle est ta chanson qui te fait penser à nous ?",
+      "Quel est le cadeau que je t'ai offert que tu préfères ?",
+      "Où aimerais-tu qu'on parte en voyage ensemble ?",
+      "Quelle est ta date préférée qu'on ait eue ?",
+      "Qu'est-ce que tu aimes le plus chez moi ?",
+      "Quel est ton surnom préféré que je te donne ?",
+      "Quelle est la chose la plus mignonne que j'aie faite ?",
+    ],
+    medium: [
+      "As-tu déjà pensé à quelqu'un d'autre pendant qu'on était ensemble ?",
+      "Quelle est la chose que tu aimerais changer dans notre relation ?",
+      "Y a-t-il quelque chose que tu m'as caché ?",
+      "Quelle est ta plus grande insécurité dans notre relation ?",
+      "As-tu déjà eu des doutes sur nous ?",
+      "Quelle est la chose la plus jalouse que tu aies ressentie ?",
+      "Y a-t-il quelque chose que tu voudrais qu'on fasse plus souvent ?",
+      "Quelle est ta plus grande peur concernant notre avenir ?",
+      "As-tu déjà flirté avec quelqu'un d'autre depuis qu'on est ensemble ?",
+      "Qu'est-ce qui te manque le plus de ta vie avant nous ?",
+    ],
+    hot: [
+      "Quelle est ta fantaisie secrète avec moi ?",
+      "Quel est l'endroit le plus fou où tu voudrais qu'on fasse l'amour ?",
+      "Quelle est ta position préférée avec moi ?",
+      "Qu'est-ce qui t'excite le plus chez moi ?",
+      "As-tu déjà fantasmé sur quelqu'un d'autre récemment ?",
+      "Quelle est la chose la plus hot qu'on ait faite ensemble ?",
+      "Qu'aimerais-tu essayer au lit qu'on n'a jamais fait ?",
+      "Quelle partie de mon corps préfères-tu ?",
+      "Raconte-moi ton rêve érotique le plus récent.",
+      "Qu'est-ce qui te rend le plus excité(e) instantanément ?",
+    ],
+  },
+  dares: {
+    soft: [
+      "Fais-moi un câlin pendant 1 minute.",
+      "Dis-moi 3 choses que tu adores chez moi.",
+      "Embrasse-moi tendrement.",
+      "Fais-moi un massage des épaules pendant 2 minutes.",
+      "Regarde-moi dans les yeux sans rire pendant 30 secondes.",
+      "Chante-moi une chanson d'amour.",
+      "Danse un slow avec moi.",
+      "Écris-moi un petit mot doux.",
+      "Fais-moi un compliment sincère.",
+      "Prends une photo mignonne de nous deux.",
+    ],
+    medium: [
+      "Embrasse-moi passionnément pendant 30 secondes.",
+      "Fais-moi un massage sensuel du dos.",
+      "Enlève ton haut pendant 2 tours.",
+      "Laisse-moi te donner un hickey où je veux.",
+      "Fais-moi un strip-tease.",
+      "Embrasse mon cou pendant 1 minute.",
+      "Laisse-moi choisir ta tenue pour demain.",
+      "Envoie-moi une photo sexy maintenant.",
+      "Fais-moi un lap dance.",
+      "Lèche de la crème chantilly sur mon corps.",
+    ],
+    hot: [
+      "Fais-moi l'amour maintenant (ou commence les préliminaires).",
+      "Déshabille-moi lentement.",
+      "Montre-moi ta fantaisie préférée.",
+      "Fais-moi un massage complet du corps nu.",
+      "Embrasse chaque partie de mon corps pendant 5 minutes.",
+      "Laisse-moi te menotter et faire ce que je veux pendant 5 minutes.",
+      "Fais-moi un strip-tease complet.",
+      "Prends une douche sexy avec moi.",
+      "Réalise ma fantaisie maintenant.",
+      "Fais-moi plaisir comme je le préfère.",
+    ],
+  },
+}
+
+export function getGameData(mode: GameMode): GameData {
+  return mode === "couple" ? coupleData : friendsData
+}
