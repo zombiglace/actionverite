@@ -168,6 +168,9 @@ export const coupleData: GameData = {
       "laisse toi te faire croquer une fesse",
       "Fais un suçon",
       "mord quelqu un",
+      "tu dois porter ton partenaire",
+      "fais des pompes sur ton partenaire et embrasse le ou la a chaque descente 3 fois",
+ 
     ],
   },
 }
