@@ -170,6 +170,9 @@ export const coupleData: GameData = {
       "mord quelqu un",
       "tu dois porter ton partenaire",
       "fais des pompes sur ton partenaire et embrasse le ou la a chaque descente 3 fois",
+      "met un aliment sur ton bras et fait toi manger",
+      "embrasse son corp partout",
+      "fait un bisous dans le cou",
  
     ],
   },
