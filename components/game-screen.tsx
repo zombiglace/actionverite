@@ -1,5 +1,3 @@
-/* Code complet mis à jour — GameScreen avec blocage quand pool vide (Option B) */
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -27,10 +25,8 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
   const [challengeType, setChallengeType] = useState<ChallengeType>("truth")
   const [currentChallenge, setCurrentChallenge] = useState("")
 
-  // Message d'erreur pool vide
   const [poolEmptyError, setPoolEmptyError] = useState<string | null>(null)
 
-  // Map anti-répétition par joueur
   const [usedByPlayer, setUsedByPlayer] = useState<UsedMap>(() => {
     const map: UsedMap = {}
     players.forEach((p) => {
@@ -39,7 +35,6 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
     return map
   })
 
-  // Timer
   const [timerDuration, setTimerDuration] = useState<number>(0)
   const [timerRemaining, setTimerRemaining] = useState<number>(0)
   const [timerActive, setTimerActive] = useState(false)
@@ -48,35 +43,25 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
   const gameData = getGameData(gameMode)
 
   const extractTime = (challenge: string): number => {
-    const match = challenge.match(/(\d+) ?(seconde|secondes|minute|minutes)/i)
+    const match = challenge.match(/(\d+)\s?(seconde|secondes|minute|minutes)/i)
     if (!match) return 0
-
     const value = parseInt(match[1])
     const unit = match[2].toLowerCase()
-
-    if (unit.includes("minute")) return value * 60
-    return value
+    return unit.includes("minute") ? value * 60 : value
   }
 
   const getRandomItem = (items: string[], used: Set<string>) => {
     const available = items.filter((i) => !used.has(i))
-
-    if (available.length === 0) {
-      return null
-    }
-
+    if (available.length === 0) return null
     return available[Math.floor(Math.random() * available.length)]
   }
 
   const handleChoice = (choice: ChallengeType) => {
     setChallengeType(choice)
-
     const items = choice === "truth" ? gameData.truths[difficulty] : gameData.dares[difficulty]
     const used = usedByPlayer[currentPlayer][choice === "truth" ? "truths" : "dares"]
-
     const challenge = getRandomItem(items, used)
 
-    // *** OPTION B : pool vide => message + stop ***
     if (!challenge) {
       setPoolEmptyError(
         choice === "truth"
@@ -86,7 +71,6 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
       return
     }
 
-    // Maj anti-répétition
     setUsedByPlayer((prev) => ({
       ...prev,
       [currentPlayer]: {
@@ -151,6 +135,14 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
     }
   }
 
+  // Couleur dynamique du timer
+  const timerColor = () => {
+    const percent = timerRemaining / timerDuration
+    if (percent > 0.5) return "#22c55e" // vert
+    if (percent > 0.2) return "#facc15" // jaune
+    return "#f43f5e" // rouge
+  }
+
   return (
     <div className="w-full max-w-md space-y-6 animate-in fade-in duration-500">
       {/* Header */}
@@ -176,18 +168,13 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
           <h3 className="text-4xl font-bold text-primary animate-in zoom-in duration-300">{currentPlayer}</h3>
         </div>
 
+        {/* CHOIX */}
         {screen === "choice" && (
           <div className="space-y-4 animate-in fade-in duration-300">
-
-            {/* Message erreur pool vide */}
             {poolEmptyError && (
               <div className="p-3 bg-destructive/10 border border-destructive text-destructive text-center rounded-lg">
                 {poolEmptyError}
-                <Button
-                  variant="outline"
-                  className="mt-2 w-full"
-                  onClick={() => setPoolEmptyError(null)}
-                >
+                <Button variant="outline" className="mt-2 w-full" onClick={() => setPoolEmptyError(null)}>
                   OK
                 </Button>
               </div>
@@ -205,6 +192,7 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
           </div>
         )}
 
+        {/* CHALLENGE */}
         {screen === "challenge" && (
           <div className="space-y-6 animate-in fade-in duration-300">
             <div className="text-center space-y-2">
@@ -219,26 +207,48 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
           </div>
         )}
 
+        {/* TIMER */}
         {screen === "timer" && (
           <div className="space-y-6 animate-in fade-in duration-300">
             <h3 className="text-center text-2xl font-bold text-primary">Défi avec temps !</h3>
             <p className="text-lg text-center min-h-[80px] flex items-center justify-center">{currentChallenge}</p>
 
             <div className="flex flex-col items-center gap-4">
-              <div className="w-40 h-40 rounded-full border-4 border-primary flex items-center justify-center text-4xl font-bold">
+              {/* Cercle animé */}
+              <div
+                className="w-40 h-40 rounded-full border-4 border-primary flex items-center justify-center text-4xl font-bold relative"
+                style={{
+                  background: `conic-gradient(${timerColor()} ${((timerRemaining / timerDuration) * 360)}deg, #e5e7eb 0deg)`,
+                }}
+              >
                 {formatTime(timerRemaining)}
               </div>
 
-              {!timerActive && (
-                <Button onClick={() => setScreen("challenge")} className="w-full" size="lg">
-                  Continuer
+              <div className="flex gap-2 w-full">
+                {!timerActive && (
+                  <Button onClick={() => setScreen("challenge")} className="flex-1" size="lg">
+                    Continuer
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setTimerActive(false)
+                    setScreen("choice")
+                    setCurrentChallenge("")
+                  }}
+                  className="flex-1"
+                  size="lg"
+                >
+                  Passer
                 </Button>
-              )}
+              </div>
             </div>
           </div>
         )}
       </Card>
 
+      {/* Liste des joueurs */}
       <div className="flex gap-2 overflow-x-auto pb-2">
         {players.map((p, i) => (
           <div key={i} className={`${i === currentPlayerIndex ? "bg-primary text-primary-foreground scale-105" : "bg-muted text-muted-foreground"} px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all`}>
