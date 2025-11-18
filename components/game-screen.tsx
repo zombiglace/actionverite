@@ -61,15 +61,15 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
   }
 
   const getRandomItem = (items: string[], used: Set<string>) => {
-    const available = items.filter((i) => !used.has(i))
+  const available = items.filter((i) => !used.has(i))
 
-    if (available.length === 0) {
-      // si plus rien de disponible → reset
-      return items[Math.floor(Math.random() * items.length)]
-    }
-
-    return available[Math.floor(Math.random() * available.length)]
+  if (available.length === 0) {
+    return null // plus rien de disponible
   }
+
+  return available[Math.floor(Math.random() * available.length)]
+}
+
 
   const handleChoice = (choice: ChallengeType) => {
     setChallengeType(choice)
