@@ -1,8 +1,4 @@
-/* Code complet mis à jour — GameScreen avec :
-   - AUCUNE répétition de questions par joueur
-   - Gestion séparée des questions utilisées POUR CHAQUE joueur
-   - Timer moderne pour les défis contenant une durée (ex: "30 secondes", "1 minute", etc.)
-*/
+/* Code complet mis à jour — GameScreen avec blocage quand pool vide (Option B) */
 
 "use client"
 
@@ -31,7 +27,10 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
   const [challengeType, setChallengeType] = useState<ChallengeType>("truth")
   const [currentChallenge, setCurrentChallenge] = useState("")
 
-  // Map par joueur pour éviter toute répétition
+  // Message d'erreur pool vide
+  const [poolEmptyError, setPoolEmptyError] = useState<string | null>(null)
+
+  // Map anti-répétition par joueur
   const [usedByPlayer, setUsedByPlayer] = useState<UsedMap>(() => {
     const map: UsedMap = {}
     players.forEach((p) => {
@@ -41,14 +40,13 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
   })
 
   // Timer
-  const [timerDuration, setTimerDuration] = useState<number>(0) // en secondes
+  const [timerDuration, setTimerDuration] = useState<number>(0)
   const [timerRemaining, setTimerRemaining] = useState<number>(0)
   const [timerActive, setTimerActive] = useState(false)
 
   const currentPlayer = players[currentPlayerIndex]
   const gameData = getGameData(gameMode)
 
-  // Détection automatique d'une durée dans le défi
   const extractTime = (challenge: string): number => {
     const match = challenge.match(/(\d+) ?(seconde|secondes|minute|minutes)/i)
     if (!match) return 0
@@ -61,15 +59,14 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
   }
 
   const getRandomItem = (items: string[], used: Set<string>) => {
-  const available = items.filter((i) => !used.has(i))
+    const available = items.filter((i) => !used.has(i))
 
-  if (available.length === 0) {
-    return null // plus rien de disponible
+    if (available.length === 0) {
+      return null
+    }
+
+    return available[Math.floor(Math.random() * available.length)]
   }
-
-  return available[Math.floor(Math.random() * available.length)]
-}
-
 
   const handleChoice = (choice: ChallengeType) => {
     setChallengeType(choice)
@@ -79,7 +76,17 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
 
     const challenge = getRandomItem(items, used)
 
-    // mise à jour du used map
+    // *** OPTION B : pool vide => message + stop ***
+    if (!challenge) {
+      setPoolEmptyError(
+        choice === "truth"
+          ? "Plus aucune vérité disponible pour ce joueur."
+          : "Plus aucune action disponible pour ce joueur."
+      )
+      return
+    }
+
+    // Maj anti-répétition
     setUsedByPlayer((prev) => ({
       ...prev,
       [currentPlayer]: {
@@ -169,9 +176,23 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
           <h3 className="text-4xl font-bold text-primary animate-in zoom-in duration-300">{currentPlayer}</h3>
         </div>
 
-        {/* CHOIX TRUE/FALSE */}
         {screen === "choice" && (
           <div className="space-y-4 animate-in fade-in duration-300">
+
+            {/* Message erreur pool vide */}
+            {poolEmptyError && (
+              <div className="p-3 bg-destructive/10 border border-destructive text-destructive text-center rounded-lg">
+                {poolEmptyError}
+                <Button
+                  variant="outline"
+                  className="mt-2 w-full"
+                  onClick={() => setPoolEmptyError(null)}
+                >
+                  OK
+                </Button>
+              </div>
+            )}
+
             <p className="text-center text-muted-foreground">Choisis ton destin...</p>
             <div className="grid grid-cols-2 gap-4">
               <Button onClick={() => handleChoice("truth")} className="h-32 text-xl font-bold bg-secondary hover:bg-secondary/90 flex flex-col gap-2">
@@ -184,7 +205,6 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
           </div>
         )}
 
-        {/* AFFICHAGE DU DEFIS */}
         {screen === "challenge" && (
           <div className="space-y-6 animate-in fade-in duration-300">
             <div className="text-center space-y-2">
@@ -199,7 +219,6 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
           </div>
         )}
 
-        {/* TIMER MODERNE */}
         {screen === "timer" && (
           <div className="space-y-6 animate-in fade-in duration-300">
             <h3 className="text-center text-2xl font-bold text-primary">Défi avec temps !</h3>
@@ -220,10 +239,9 @@ export function GameScreen({ players, gameMode, difficulty, onBack, onRestart }:
         )}
       </Card>
 
-      {/* Liste des joueurs */}
       <div className="flex gap-2 overflow-x-auto pb-2">
         {players.map((p, i) => (
-          <div key={i} className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${i === currentPlayerIndex ? "bg-primary text-primary-foreground scale-105" : "bg-muted text-muted-foreground"}`}>
+          <div key={i} className={`${i === currentPlayerIndex ? "bg-primary text-primary-foreground scale-105" : "bg-muted text-muted-foreground"} px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all`}>
             {p}
           </div>
         ))}
